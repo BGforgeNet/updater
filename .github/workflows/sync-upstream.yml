@@ -1,0 +1,28 @@
+name: Sync forks with upstream
+
+on:
+  schedule:
+    - cron: '33 7 * * *'
+  workflow_dispatch:  # click the button on Github repo!
+  push:
+
+jobs:
+  sync_iesdp_master: # master follows upstream strictly
+    runs-on: ubuntu-latest
+    name: Sync master with upstream
+    steps:
+      - name: IESDP | Checkout master
+        uses: actions/checkout@v3.0.0
+        with:
+          ref: master
+          token: ${{ secrets.GITHUB_TOKEN }}
+          repository: BGforgeNet/iesdp
+
+      - name: Pull (Fast-Forward) upstream changes
+        id: sync-iesdp-master
+        uses: aormsby/Fork-Sync-With-Upstream-action@v3.2
+        with:
+          upstream_sync_repo: Gibberlings3/iesdp
+          upstream_repo_access_token: master
+          target_sync_branch: master
+          target_repo_token: ${{ secrets.GITHUB_TOKEN }}
